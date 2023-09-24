@@ -18,12 +18,22 @@ export const addLink = async (
     program.programId
   );
 
+  const [linktreeAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("linktree_account"),
+      new anchor.BN(accountId).toArrayLike(Buffer, "le", 4),
+    ],
+    program.programId
+  );
+
+
   try {
 
     const sig = await program.methods
       .addLink(accountId, linkName, linkUrl)
       .accounts({
         linkAccount,
+        linktreeAccount,
         authority: wallet.publicKey,
       })
       .rpc();
