@@ -13,7 +13,7 @@ export const getLinksByProfile = async (
         {
             memcmp: {
                 offset: 8 + 8,
-                bytes: bs58.encode(Buffer.from("bolt")),
+                bytes: bs58.encode(Buffer.from(profile)),
 
             }
         }
