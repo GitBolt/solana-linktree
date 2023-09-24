@@ -43,8 +43,7 @@ pub mod linktree {
         ctx: Context<UpdateAccount>,
         account_id: u32,
         profile_link: String,
-        bg_color: String,
     ) -> Result<()> {
-        instructions::update_account::handler(ctx, account_id, profile_link, bg_color)
+        instructions::update_account::handler(ctx, account_id, profile_link)
     }
 }

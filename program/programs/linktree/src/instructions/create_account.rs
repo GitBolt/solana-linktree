@@ -30,7 +30,6 @@ pub fn handler(
     linktree_account.owner = *ctx.accounts.authority.key;
     linktree_account.profile_link = profile_link;
     linktree_account.link_count = 0;
-    linktree_account.bg_color = String::from("#000000");
 
     msg!("Created a new link tree account! Id: {}", account_id);
     Ok(())

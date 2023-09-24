@@ -16,6 +16,14 @@ pub struct InitializeLinkAccount<'info> {
     )]
     pub link_account: Account<'info, IndividualLink>,
 
+    #[account(
+        mut,
+        seeds = [b"linktree_account", linktree_id.to_le_bytes().as_ref()], 
+        bump
+    )]
+    pub linktree_account: Account<'info, LinktreeAccount>,
+
+
     pub system_program: Program<'info, System>,
 }
 
@@ -26,11 +34,12 @@ pub fn handler(
     link_url: String,
 ) -> Result<()> {
     let link_account = &mut ctx.accounts.link_account;
+    let linktree_account = &mut ctx.accounts.linktree_account;
 
     link_account.linktree_id = linktree_id;
     link_account.link_name = link_name;
     link_account.link_url = link_url;
-
+    linktree_account.link_count += 1;
     msg!("Created a new link!");
     Ok(())
 }

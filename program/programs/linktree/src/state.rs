@@ -4,9 +4,8 @@ use anchor_lang::prelude::*;
 #[derive(Default)]
 pub struct LinktreeAccount {
     pub id: u32,
-    pub owner: Pubkey,
     pub profile_link: String,
-    pub bg_color: String,
+    pub owner: Pubkey,
     pub link_count: u16,
 }
 

@@ -21,7 +21,7 @@ export const updateAccount = async (
   try {
 
     const sig = await program.methods
-      .updateAccount(accountId, profileLink, bgColor)
+      .updateAccount(accountId, profileLink)
       .accounts({
         linktreeAccount,
         authority: wallet.publicKey,
