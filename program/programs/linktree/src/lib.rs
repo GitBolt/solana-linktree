@@ -11,7 +11,7 @@ pub use state::*;
 declare_id!("EDNrxi9eR9Lr7TYUVdb7ugza8FXyG65sXwzrM6Es2sih");
 
 #[program]
-pub mod poll {
+pub mod linktree {
     use super::*;
 
     pub fn create_account(

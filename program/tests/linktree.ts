@@ -75,7 +75,7 @@ describe("Linktree", () => {
 
   it("Remove Link", async () => {
     const txHash = await program.methods
-      .removeLink(accountId, linkName, "aabis.dev")
+      .removeLink(accountId, linkName)
       .accounts({
         linkAccount,
         authority: wallet.publicKey,
