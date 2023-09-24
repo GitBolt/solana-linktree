@@ -18,18 +18,7 @@ pub struct RemoveLink<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler(
-    ctx: Context<RemoveLink>,
-    linktree_id: u32,
-    link_name: String,
-    link_url: String,
-) -> Result<()> {
-    let link_account = &mut ctx.accounts.link_account;
-
-    link_account.linktree_id = linktree_id;
-    link_account.link_name = link_name;
-    link_account.link_url = link_url;
-
-    msg!("Remove a link!");
+pub fn handler(ctx: Context<RemoveLink>, linktree_id: u32, link_name: String) -> Result<()> {
+    msg!("Removed a link!");
     Ok(())
 }

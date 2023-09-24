@@ -11,7 +11,7 @@ pub use state::*;
 declare_id!("EDNrxi9eR9Lr7TYUVdb7ugza8FXyG65sXwzrM6Es2sih");
 
 #[program]
-pub mod linktree {
+pub mod poll {
     use super::*;
 
     pub fn create_account(
@@ -35,9 +35,8 @@ pub mod linktree {
         ctx: Context<RemoveLink>,
         linktree_id: u32,
         link_name: String,
-        link_url: String,
     ) -> Result<()> {
-        instructions::remove_link::handler(ctx, linktree_id, link_name, link_url)
+        instructions::remove_link::handler(ctx, linktree_id, link_name)
     }
 
     pub fn update_account(
