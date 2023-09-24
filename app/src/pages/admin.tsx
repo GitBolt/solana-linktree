@@ -23,6 +23,7 @@ const Admin: React.FC = () => {
   const router = useRouter()
 
   useEffect(() => {
+    if (!wallet) return
     const fetchData = async () => {
       const data = await getAccount(wallet as NodeWallet)
       setAccount(data.sig)
@@ -31,7 +32,7 @@ const Admin: React.FC = () => {
       setLinks(links.sig.map((l: any) => { return { address: l.publicKey.toBase58(), name: l.account.linkName, url: l.account.linkUrl } }))
     }
     fetchData()
-  }, [reload])
+  }, [reload, wallet])
 
 
 
@@ -84,7 +85,7 @@ const Admin: React.FC = () => {
           {account && <Button onClick={() => setShowModal(true)} leftIcon={<PlusSquareIcon />} h="50px" fontSize="20px" borderRadius="100px" w="50%" colorScheme='purple'>Add Link</Button>}
         </Flex>
 
-        <Flex flexFlow="column" align="center" justify="center">
+        <Flex gap="1rem" flexFlow="column" align="center" justify="center">
           {links.map((l) => (
             <Flex justify="space-between" align="center" p="0 10px" bg="gray.700" w="50%" h="80px" borderRadius="10px" key={l.address}>
               <Flex align="start" justify="center" flexFlow="column">

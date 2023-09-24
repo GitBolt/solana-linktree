@@ -11,16 +11,16 @@ export const getAccount = async (
     let data = await program.account.linktreeAccount.all([
       {
         memcmp: {
-          offset: 8 + 4,
+          offset: 8 + 4 + 8,
           bytes: wallet.publicKey.toBase58(),
         },
       },
     ]);
-
+    console.log(data)
     return { sig: data[0], error: false }
 
   } catch (e: any) {
-    console.log(e)
+    console.log("Get Account Error: ", e)
     return { error: e.toString(), sig: null }
   }
 }

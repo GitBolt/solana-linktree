@@ -4,7 +4,8 @@ import { useRouter } from 'next/router'
 import { useAnchorWallet } from '@solana/wallet-adapter-react'
 import { createAccount } from '@/util/program/createAccount'
 import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getAccount } from '@/util/program/getAccount'
 
 
 export default function Home() {
@@ -14,7 +15,16 @@ export default function Home() {
   const router = useRouter()
   const wallet = useAnchorWallet()
   const toast = useToast()
+  const [isData, setIsData] = useState<any>()
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getAccount(wallet as NodeWallet)
+      setIsData(data.sig)
+    }
+
+    fetchData()
+  })
   const handleSubmit = async () => {
     const id = Math.round(Number(Math.random() * 1000))
     const res = await createAccount(wallet as NodeWallet, id, profileLink)
@@ -45,7 +55,7 @@ export default function Home() {
 
         <Text color="gray.400" fontSize="40px">One link to to share all other links powered by Solana</Text>
 
-        <Flex mt="20px" justify="space-around" w="60%" gap="1rem">
+        {!isData ? <Flex mt="20px" justify="space-around" w="60%" gap="1rem">
 
           <Input
             onChange={(e) => setProfileLink(e.target.value)}
@@ -59,7 +69,7 @@ export default function Home() {
           <Button onClick={handleSubmit} mb="80px" w="30%" fontSize="30px" colorScheme='green' h="70px">Claim Username</Button>
 
         </Flex>
-
+          : <Button onClick={() => router.push("/admin")}  w="30%" fontSize="30px" colorScheme='green' h="70px"  >Go to Admin Page</Button>}
       </Flex>
 
 
