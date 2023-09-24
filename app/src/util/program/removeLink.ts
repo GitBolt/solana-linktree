@@ -5,7 +5,6 @@ export const removeLink = async (
   wallet: anchor.Wallet,
   accountId: number,
   linkName: string,
-  linkUrl: string,
 ) => {
   const program = anchorProgram(wallet);
 
@@ -21,7 +20,7 @@ export const removeLink = async (
   try {
 
     const sig = await program.methods
-      .removeLink(accountId, linkName, linkUrl)
+      .removeLink(accountId, linkName)
       .accounts({
         linkAccount,
         authority: wallet.publicKey,

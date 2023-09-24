@@ -6,15 +6,19 @@ import { useRouter } from 'next/router';
 import { Navbar } from '@/components/Navbar';
 import { addLink } from '@/util/program/addLink';
 import { getAccount } from '@/util/program/getAccount';
-import { CopyIcon, PlusSquareIcon } from '@chakra-ui/icons';
+import { CopyIcon, DeleteIcon, PlusSquareIcon } from '@chakra-ui/icons';
+import { AddLinkModal } from '@/components/AddLinkModal';
+import { getLinks } from '@/util/program/getLinks';
+import { removeLink } from '@/util/program/removeLink';
 
 const Admin: React.FC = () => {
   const wallet = useAnchorWallet();
 
   const [account, setAccount] = useState<any>()
-  const [linkName, setLinkName] = useState<string>("")
-  const [linkUrl, setLinkUrl] = useState<string>("")
+  const [links, setLinks] = useState<any[]>([])
+  const [showModal, setShowModal] = useState<boolean>(false)
 
+  const [reload, setReload] = useState<number>(+new Date())
   const toast = useToast()
   const router = useRouter()
 
@@ -22,22 +26,29 @@ const Admin: React.FC = () => {
     const fetchData = async () => {
       const data = await getAccount(wallet as NodeWallet)
       setAccount(data.sig)
+
+      const links = await getLinks(wallet as NodeWallet, data.sig.account.id)
+      setLinks(links.sig.map((l: any) => { return { address: l.publicKey.toBase58(), name: l.account.linkName, url: l.account.linkUrl } }))
     }
     fetchData()
-  }, [])
+  }, [reload])
 
 
-  const handleAddLink = async () => {
-    const id = Math.round(Number(Math.random() * 1000))
-    const res = await addLink(wallet as NodeWallet, account.account.id, linkName, linkUrl)
+
+  const handleRemoveLink = async (linkName: string) => {
+
+    const res = await removeLink(wallet as NodeWallet, account.account.id, linkName)
     console.log(res)
     if (!res.error) {
       toast({
         status: "success",
-        title: "Created a new poll!"
+        title: "Remove a link!"
       })
+      setReload(+new Date())
+
     }
   };
+
 
   const handleCopy = () => {
     navigator.clipboard.writeText(`${window.location.hostname}/${account.account.profileLink}`)
@@ -51,6 +62,8 @@ const Admin: React.FC = () => {
 
     <>
       <Navbar />
+
+      {showModal ? <AddLinkModal setReload={setReload} account={account} isOpen={showModal} onClose={setShowModal} /> : null}
       <Flex flexFlow="column" gap="1rem" bg="#05070D" minH="100vh" h="100%" p="0 10rem">
 
         <Flex justify="space-between" w="100%" h="60px" bg="gray.700" borderRadius="10px" mt="1rem" align="center" p="0 1rem">
@@ -68,7 +81,19 @@ const Admin: React.FC = () => {
         </Flex>
 
         <Flex w="100%" align="center" justify="center">
-          <Button leftIcon={<PlusSquareIcon />} h="50px" fontSize="20px" borderRadius="100px" w="50%" colorScheme='purple'>Add Link</Button>
+          {account && <Button onClick={() => setShowModal(true)} leftIcon={<PlusSquareIcon />} h="50px" fontSize="20px" borderRadius="100px" w="50%" colorScheme='purple'>Add Link</Button>}
+        </Flex>
+
+        <Flex flexFlow="column" align="center" justify="center">
+          {links.map((l) => (
+            <Flex justify="space-between" align="center" p="0 10px" bg="gray.700" w="50%" h="80px" borderRadius="10px" key={l.address}>
+              <Flex align="start" justify="center" flexFlow="column">
+                <Text color="white" fontSize="30px">{l.name}</Text>
+                <Text color="white" fontSize="20px">https://{l.url}</Text>
+              </Flex>
+              <DeleteIcon onClick={() => handleRemoveLink(l.name)} cursor="pointer" color="red" width="20px" height="20px" />
+            </Flex>
+          ))}
         </Flex>
       </Flex>
     </>
