@@ -1,21 +1,22 @@
 import * as anchor from '@coral-xyz/anchor'
 import { anchorProgram } from '@/util/helper';
 
-export const getPoll = async (
+export const getAccount = async (
   wallet: anchor.Wallet,
-  id: number,
 ) => {
   const program = anchorProgram(wallet);
 
   try {
-    let data = await program.account.pollAccount.all([
+    // @ts-ignore
+    let data = await program.account.linktreeAccount.all([
       {
         memcmp: {
-          offset: 8,
-          bytes: anchor.utils.bytes.bs58.encode(Uint8Array.from([id])),
+          offset: 8 + 4,
+          bytes: wallet.publicKey.toBase58(),
         },
       },
     ]);
+
     return { sig: data[0], error: false }
 
   } catch (e: any) {

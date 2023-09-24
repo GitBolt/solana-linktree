@@ -1,18 +1,19 @@
 import * as anchor from '@coral-xyz/anchor'
 import { anchorProgram } from '@/util/helper';
 
-export const createPollUser = async (
+export const removeLink = async (
   wallet: anchor.Wallet,
-  pollId: number,
+  accountId: number,
+  linkName: string,
+  linkUrl: string,
 ) => {
-
   const program = anchorProgram(wallet);
 
-  const [pollUserAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+  const [linkAccount] = anchor.web3.PublicKey.findProgramAddressSync(
     [
-      Buffer.from("poll_user"),
-      wallet.publicKey.toBuffer(),
-      new anchor.BN(pollId).toArrayLike(Buffer, "le", 4),
+      Buffer.from("link_account"),
+      new anchor.BN(accountId).toArrayLike(Buffer, "le", 4),
+      Buffer.from(linkName),
     ],
     program.programId
   );
@@ -20,14 +21,12 @@ export const createPollUser = async (
   try {
 
     const sig = await program.methods
-      .createPollUser(
-        new anchor.BN(pollId),
-      )
+      .removeLink(accountId, linkName, linkUrl)
       .accounts({
-        pollUserAccount,
+        linkAccount,
         authority: wallet.publicKey,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      }).instruction()
+      })
+      .rpc();
 
     return { error: false, sig }
 
